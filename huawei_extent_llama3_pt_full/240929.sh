@@ -1,0 +1,33 @@
+#!/bin/bash
+#nohup 
+deepspeed --num_nodes=4 --hostfile=/root/fcl/LLaMA-Factory/examples/train_full/hostfile /root/fcl/LLaMA-Factory/src/train.py \
+    --deepspeed /root/fcl/LLaMA-Factory/examples/deepspeed/ds_z3_config.json \
+    --stage pt \
+    --do_train \
+    --model_name_or_path /root/fcl/Meta-Llama-3-8B_512_tokenizer \
+    --dataset pt_512_c4_format \
+    --dataset_dir /root/fcl/LLaMA-Factory/data \
+    --finetuning_type full \
+    --resize_vocab \
+    --output_dir /root/fcl/LLaMA-Factory/saves/240929 \
+    --overwrite_cache \
+    --overwrite_output_dir \
+    --cutoff_len 1024 \
+    --max_samples 1000000 \
+    --preprocessing_num_workers 2 \
+    --per_device_train_batch_size 8 \
+    --per_device_eval_batch_size 1 \
+    --gradient_accumulation_steps 1 \
+    --lr_scheduler_type cosine \
+    --logging_steps 10 \
+    --warmup_steps 20 \
+    --warmup_ratio 0.1 \
+    --save_steps 1000 \
+    --eval_steps 500 \
+    --eval_strategy steps \
+    --learning_rate 1.0e-5 \
+    --num_train_epochs 3.0 \
+    --val_size 0.1 \
+    --ddp_timeout 180000000 \
+    --plot_loss \
+    --fp16 > /root/fcl/LLaMA-Factory/log/240929_4nodes_pt_full_dsz3_3.log 2>&1 &
